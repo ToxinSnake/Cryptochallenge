@@ -1,0 +1,147 @@
+PublicKey [
+    x_1*x_3 + x_2*x_3 + x_2,
+    x_1*x_3 + x_1 + x_2 + x_3,
+    x_1*x_2 + x_3
+]
+erzeuge Matrix
+klartext (0 1 1)
+chitext [ 0, 0, 1 ]
+resultierende Zeile der Matrix
+(0 0 0 0 0 1 0 0 1)
+klartext (0 0 0)
+chitext [ 0, 0, 0 ]
+resultierende Zeile der Matrix
+(0 0 0 0 0 0 0 0 0)
+klartext (1 0 1)
+chitext [ 1, 1, 1 ]
+resultierende Zeile der Matrix
+(1 1 1 0 0 0 1 1 1)
+klartext (1 0 0)
+chitext [ 0, 1, 0 ]
+resultierende Zeile der Matrix
+(0 1 0 0 0 0 0 0 0)
+klartext (0 0 1)
+chitext [ 0, 1, 1 ]
+resultierende Zeile der Matrix
+(0 0 0 0 0 0 0 1 1)
+klartext (0 1 0)
+chitext [ 1, 1, 0 ]
+resultierende Zeile der Matrix
+(0 0 0 1 1 0 0 0 0)
+klartext (1 1 0)
+chitext [ 1, 0, 1 ]
+resultierende Zeile der Matrix
+(1 0 1 1 0 1 0 0 0)
+klartext (1 1 1)
+chitext [ 1, 0, 0 ]
+resultierende Zeile der Matrix
+(1 0 0 1 0 0 1 0 0)
+klartext (1 0 1)
+chitext [ 1, 1, 1 ]
+resultierende Zeile der Matrix
+(1 1 1 0 0 0 1 1 1)
+klartext (0 1 1)
+chitext [ 0, 0, 1 ]
+resultierende Zeile der Matrix
+(0 0 0 0 0 1 0 0 1)
+klartext (1 0 0)
+chitext [ 0, 1, 0 ]
+resultierende Zeile der Matrix
+(0 1 0 0 0 0 0 0 0)
+klartext (0 1 0)
+chitext [ 1, 1, 0 ]
+resultierende Zeile der Matrix
+(0 0 0 1 1 0 0 0 0)
+klartext (1 0 1)
+chitext [ 1, 1, 1 ]
+resultierende Zeile der Matrix
+(1 1 1 0 0 0 1 1 1)
+klartext (0 1 1)
+chitext [ 0, 0, 1 ]
+resultierende Zeile der Matrix
+(0 0 0 0 0 1 0 0 1)
+klartext (1 1 1)
+chitext [ 1, 0, 0 ]
+resultierende Zeile der Matrix
+(1 0 0 1 0 0 1 0 0)
+klartext (0 0 0)
+chitext [ 0, 0, 0 ]
+resultierende Zeile der Matrix
+(0 0 0 0 0 0 0 0 0)
+klartext (0 0 1)
+chitext [ 0, 1, 1 ]
+resultierende Zeile der Matrix
+(0 0 0 0 0 0 0 1 1)
+klartext (0 1 0)
+chitext [ 1, 1, 0 ]
+resultierende Zeile der Matrix
+(0 0 0 1 1 0 0 0 0)
+Die vollstÃ¤ndige Matrix
+[0 0 0 0 0 1 0 0 1]
+[0 0 0 0 0 0 0 0 0]
+[1 1 1 0 0 0 1 1 1]
+[0 1 0 0 0 0 0 0 0]
+[0 0 0 0 0 0 0 1 1]
+[0 0 0 1 1 0 0 0 0]
+[1 0 1 1 0 1 0 0 0]
+[1 0 0 1 0 0 1 0 0]
+[1 1 1 0 0 0 1 1 1]
+[0 0 0 0 0 1 0 0 1]
+[0 1 0 0 0 0 0 0 0]
+[0 0 0 1 1 0 0 0 0]
+[1 1 1 0 0 0 1 1 1]
+[0 0 0 0 0 1 0 0 1]
+[1 0 0 1 0 0 1 0 0]
+[0 0 0 0 0 0 0 0 0]
+[0 0 0 0 0 0 0 1 1]
+[0 0 0 1 1 0 0 0 0]
+Dreicksmatrix (mit allen Elementen) eliminiert
+Die Matrix nach Anwendung von Gauss (der Algorithmus von Magma eliminert alle 
+Elemente über einer Stufe. Das ist in ihrer Lösung überflüssig!!!!
+[1 0 0 0 0 0 0 0 1]
+[0 1 0 0 0 0 0 0 0]
+[0 0 1 0 0 0 1 0 1]
+[0 0 0 1 0 0 1 0 1]
+[0 0 0 0 1 0 1 0 1]
+[0 0 0 0 0 1 0 0 1]
+[0 0 0 0 0 0 0 1 1]
+[0 0 0 0 0 0 0 0 0]
+[0 0 0 0 0 0 0 0 0]
+[0 0 0 0 0 0 0 0 0]
+[0 0 0 0 0 0 0 0 0]
+[0 0 0 0 0 0 0 0 0]
+[0 0 0 0 0 0 0 0 0]
+[0 0 0 0 0 0 0 0 0]
+[0 0 0 0 0 0 0 0 0]
+[0 0 0 0 0 0 0 0 0]
+[0 0 0 0 0 0 0 0 0]
+[0 0 0 0 0 0 0 0 0]
+Basis/Spezielle Lösungen des Lösungsraumes
+[
+    (1 0 0 0 0 1 1 1 1),
+    (0 0 1 1 1 0 1 0 0)
+]
+ Basis der Relationen:
+x_1y_1+x_2y_3+x_3y_1+x_3y_2+x_3y_3
+
+x_1y_3+x_2y_1+x_2y_2+x_3y_1
+
+ Chitext (1 1 1)
+Das Gleichungssystem nach einsetzen von c
+x_1+x_2+x_3=0
+
+x_1+x_3=0
+
+Die Matrix nach Anwendung von Gauss (der Algorithmus von Magma eliminert alle 
+Elemente über einer Stufe. Das ist in ihrer Lösung überflüssig!!!!
+[1 0 1]
+[0 1 0]
+Anzahl der Basiselemente
+1
+[
+    (1 0 1)
+]
+Möglicher Klartext: [ 1, 0, 1 ]
+Probe durch Verschlüsselung:
+Chitext (1 1 1)
+Verschlüsselung vom möglichen Klartext: [ 1, 1, 1 ]
