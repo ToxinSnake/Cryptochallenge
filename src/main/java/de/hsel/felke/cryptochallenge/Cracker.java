@@ -41,6 +41,7 @@ public class Cracker
         
         //Resultierende Matrix initialisieren
         int[][] fullMatrix = generateMatrix(pubKey, allVars);
+        //TODO: Logger statt Sysout
         
         //Debug Anfang
 //        System.out.println("Full Matrix: ");
