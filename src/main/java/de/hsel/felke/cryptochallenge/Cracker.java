@@ -24,11 +24,10 @@ public class Cracker
         
         ArrayList<Expression> pubKey = null;
         HashSet<String> allVars = new HashSet<String>();
-        int varCount = 0;
         
         System.out.println("Trying to load public key...");
         try {
-        	pubKey = getPublicKey("3Bit.txt");
+        	pubKey = getPublicKey("kryptochallengegruppe1.txt");
         } catch (IOException e) {
         	e.printStackTrace();
         	System.exit(1);
@@ -41,13 +40,29 @@ public class Cracker
         }
         
         //Resultierende Matrix initialisieren
-        varCount = allVars.size();
+        int[][] fullMatrix = generateMatrix(pubKey, allVars);
+        
+        //Debug Anfang
+//        System.out.println("Full Matrix: ");
+//        for(int i = 0; i < fullMatrix.length; i++) {
+//        	for(int j = 0; j < fullMatrix[i].length; j++) {
+//        		System.out.print(fullMatrix[i][j]+" ");
+//        	}
+//        	System.out.println();
+//        }
+        //Debug Ende
+    }
+
+	public static int[][] generateMatrix(ArrayList<Expression> pubKey, HashSet<String> allVars) {
+		int varCount;
+		varCount = allVars.size();
         System.out.println("Variables found: "+varCount);
-        System.out.println("Allocating memory for "+varCount*varCount+"*"+2*varCount*varCount+" matrix...");
+        System.out.println("Allocating memory for "+2*varCount*varCount+"*"+varCount*varCount+" matrix...");
         int fullMatrix[][] = new int[2*varCount*varCount][varCount*varCount];
+        System.out.println("Generating "+2*varCount*varCount+" cleartext-ciphertext pairs...");
         
         //2n^2 Klartexte erzeugen, einsetzen und resultierende Zeile erzeugen
-        for(int i = 0; i <= (2*varCount*varCount); i++ ) {
+        for(int i = 0; i < (2*varCount*varCount); i++ ) {
         	String binary = Integer.toBinaryString(i+1);
         	int [] clearText = new int[varCount];
         	int [] cipherText = new int[varCount];
@@ -64,11 +79,11 @@ public class Cracker
         	}
         	
         	//Debug Anfang
-        	System.out.print("Cleartext: ");
-        	for(int j = 0; j < clearText.length; j++) {
-        		System.out.print(clearText[j]+" ");
-        	}
-        	System.out.println();
+//        	System.out.print("Cleartext: ");
+//        	for(int j = 0; j < clearText.length; j++) {
+//        		System.out.print(clearText[j]+" ");
+//        	}
+//        	System.out.println();
         	//Debug Ende
         	
         	HashMap<String, Double> values = new HashMap<String, Double>();
@@ -78,38 +93,30 @@ public class Cracker
         		values.put(iterator, varVal);
         	}
         	
-        	System.out.print("Chitext: ");
+//        	System.out.print("Chitext: ");
         	int expressionCounter = 0;
         	for(Expression iterator : pubKey) {
         		iterator.setVariables(values);
         		cipherText[expressionCounter] = (int)iterator.evaluate()%2;       		
-        		System.out.print(cipherText[expressionCounter] + " ");
+//        		System.out.print(cipherText[expressionCounter] + " ");
         		expressionCounter++;
         	}
-        	System.out.println();
+//        	System.out.println();
         	
-        	System.out.print("Resulting Row: ");
+//        	System.out.print("Resulting Row: ");
         	int rowCounter = 0;
         	for(int j = 0; j < clearText.length; j++) {
         		for(int s = 0; s < cipherText.length; s++) {
         			fullMatrix[i][rowCounter] = clearText[j]*cipherText[s];
-        			System.out.print(fullMatrix[i][rowCounter]+" ");
+//        			System.out.print(fullMatrix[i][rowCounter]+" ");
         			rowCounter++;
         		}
         	}
-        	System.out.println("\n------------");
+//        	System.out.println("\n------------");
         }
-        
-        //Debug Anfang
-        System.out.println("Full Matrix: ");
-        for(int i = 0; i < fullMatrix.length; i++) {
-        	for(int j = 0; j < fullMatrix[i].length; j++) {
-        		System.out.print(fullMatrix[i][j]+" ");
-        	}
-        	System.out.println();
-        }
-        //Debug Ende
-    }
+        System.out.println("Done!");
+		return fullMatrix;
+	}
     
     public static ArrayList<Expression> getPublicKey(String path) throws IOException {   	
     	ArrayList<Expression> pubKey = new ArrayList<Expression>();
