@@ -7,15 +7,19 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.logging.Logger;
 
 import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
 
 public class Cracker 
-{
+{	
+	private static final Logger logger = Logger.getLogger(Cracker.class.getName());
+	
     public static void main(String[] args)
     {
         System.out.println( "Cryptochallenge!" );
+    	logger.info("Test!");
         
 //        if(args.length == 0) {
 //        	System.out.println("Missing Filepath!\nUsage: Cracker publickey.txt");
@@ -27,7 +31,7 @@ public class Cracker
         
         System.out.println("Trying to load public key...");
         try {
-        	pubKey = getPublicKey("kryptochallengegruppe1.txt");
+        	pubKey = getPublicKey("3Bit.txt");
         } catch (IOException e) {
         	e.printStackTrace();
         	System.exit(1);
