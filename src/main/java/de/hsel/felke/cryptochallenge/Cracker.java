@@ -26,7 +26,7 @@ public class Cracker
 	
     public static void main(String[] args)
     {
-        log.setLevel(Level.FINER);
+    	log.setLevel(Level.INFO);
     	System.out.println( "Cryptochallenge!" );
         
 //        if(args.length == 0) {
@@ -56,13 +56,11 @@ public class Cracker
         //TODO: Logger statt Sysout
         
         //Debug Anfang
-        System.out.println(log.getLevel().intValue());
-        System.out.println(Level.FINER.intValue());
-        if(true) {
-        	log.finer("Full Matrix: ");
+        if(log.getLevel() == Level.INFO) {
+        	System.out.println("Full Matrix: ");
 	        for(int i = 0; i < fullMatrix.length; i++) {
 	        	for(int j = 0; j < fullMatrix[i].length; j++) {
-	        		log.finer(fullMatrix[i][j]+" ");
+	        		System.out.print(fullMatrix[i][j]+" ");
 	        	}
 	        	System.out.println();
 	        }
