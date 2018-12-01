@@ -7,19 +7,27 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
 import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
 
 public class Cracker 
 {	
-	private static final Logger logger = Logger.getLogger(Cracker.class.getName());
+	
+	static {
+	    System.setProperty("java.util.logging.SimpleFormatter.format", 
+	            "%4$s: %5$s: %n");
+	}
+	
+	private static final Logger log = Logger.getLogger(Cracker.class.getName());
 	
     public static void main(String[] args)
     {
-        System.out.println( "Cryptochallenge!" );
-    	logger.info("Test!");
+        log.setLevel(Level.FINER);
+    	System.out.println( "Cryptochallenge!" );
         
 //        if(args.length == 0) {
 //        	System.out.println("Missing Filepath!\nUsage: Cracker publickey.txt");
@@ -48,13 +56,17 @@ public class Cracker
         //TODO: Logger statt Sysout
         
         //Debug Anfang
-//        System.out.println("Full Matrix: ");
-//        for(int i = 0; i < fullMatrix.length; i++) {
-//        	for(int j = 0; j < fullMatrix[i].length; j++) {
-//        		System.out.print(fullMatrix[i][j]+" ");
-//        	}
-//        	System.out.println();
-//        }
+        System.out.println(log.getLevel().intValue());
+        System.out.println(Level.FINER.intValue());
+        if(true) {
+        	log.finer("Full Matrix: ");
+	        for(int i = 0; i < fullMatrix.length; i++) {
+	        	for(int j = 0; j < fullMatrix[i].length; j++) {
+	        		log.finer(fullMatrix[i][j]+" ");
+	        	}
+	        	System.out.println();
+	        }
+        }     	        
         //Debug Ende
     }
 
@@ -84,11 +96,11 @@ public class Cracker
         	}
         	
         	//Debug Anfang
-//        	System.out.print("Cleartext: ");
-//        	for(int j = 0; j < clearText.length; j++) {
-//        		System.out.print(clearText[j]+" ");
-//        	}
-//        	System.out.println();
+			System.out.print("Cleartext: ");
+			for (int j = 0; j < clearText.length; j++) {
+				System.out.print(clearText[j] + " ");
+			}
+			System.out.println();   	
         	//Debug Ende
         	
         	HashMap<String, Double> values = new HashMap<String, Double>();
@@ -98,26 +110,26 @@ public class Cracker
         		values.put(iterator, varVal);
         	}
         	
-//        	System.out.print("Chitext: ");
+        	System.out.print("Chitext: ");
         	int expressionCounter = 0;
         	for(Expression iterator : pubKey) {
         		iterator.setVariables(values);
         		cipherText[expressionCounter] = (int)iterator.evaluate()%2;       		
-//        		System.out.print(cipherText[expressionCounter] + " ");
+        		System.out.print(cipherText[expressionCounter] + " ");
         		expressionCounter++;
         	}
-//        	System.out.println();
+        	System.out.println();
         	
-//        	System.out.print("Resulting Row: ");
+        	System.out.print("Resulting Row: ");
         	int rowCounter = 0;
         	for(int j = 0; j < clearText.length; j++) {
         		for(int s = 0; s < cipherText.length; s++) {
         			fullMatrix[i][rowCounter] = clearText[j]*cipherText[s];
-//        			System.out.print(fullMatrix[i][rowCounter]+" ");
+        			System.out.print(fullMatrix[i][rowCounter]+" ");
         			rowCounter++;
         		}
         	}
-//        	System.out.println("\n------------");
+        	System.out.println("\n------------");
         }
         System.out.println("Done!");
 		return fullMatrix;
@@ -134,7 +146,7 @@ public class Cracker
     	for(String outer : splits) {
     		String line = outer.trim();
     		if(line.contains("x_")){ 
-//    			System.out.println(line);
+    			log.finer(line);
     			String[] vars = line.split("\\*|\\+");
     			for(String inner : vars) {
     				variables.add(inner.trim());
