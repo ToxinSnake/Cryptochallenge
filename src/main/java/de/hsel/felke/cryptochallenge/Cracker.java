@@ -16,17 +16,9 @@ import net.objecthunter.exp4j.ExpressionBuilder;
 
 public class Cracker 
 {	
-	
-	static {
-	    System.setProperty("java.util.logging.SimpleFormatter.format", 
-	            "%4$s: %5$s: %n");
-	}
-	
-	private static final Logger log = Logger.getLogger(Cracker.class.getName());
-	
+
     public static void main(String[] args)
     {
-    	log.setLevel(Level.INFO);
     	System.out.println( "Cryptochallenge!" );
         
 //        if(args.length == 0) {
@@ -53,19 +45,17 @@ public class Cracker
         
         //Resultierende Matrix initialisieren
         int[][] fullMatrix = generateMatrix(pubKey, allVars);
-        //TODO: Logger statt Sysout
-        
+
         //Debug Anfang
-        if(log.getLevel() == Level.INFO) {
-        	System.out.println("Full Matrix: ");
-	        for(int i = 0; i < fullMatrix.length; i++) {
-	        	for(int j = 0; j < fullMatrix[i].length; j++) {
-	        		System.out.print(fullMatrix[i][j]+" ");
-	        	}
-	        	System.out.println();
-	        }
-        }     	        
+		System.out.println("Full Matrix: ");
+		for (int i = 0; i < fullMatrix.length; i++) {
+			for (int j = 0; j < fullMatrix[i].length; j++) {
+				System.out.print(fullMatrix[i][j] + " ");
+			}
+			System.out.println();
+		}        
         //Debug Ende
+
     }
 
 	public static int[][] generateMatrix(ArrayList<Expression> pubKey, HashSet<String> allVars) {
@@ -84,7 +74,7 @@ public class Cracker
         	
         	//Wenn 2n^2 > 2^n
         	if (binary.length() > clearText.length) {
-        		System.out.println("Generated all possible cleartexts!");
+        		System.out.println("Abort! Generated all possible cleartexts!");
         		break;
         	}
         	
@@ -144,7 +134,7 @@ public class Cracker
     	for(String outer : splits) {
     		String line = outer.trim();
     		if(line.contains("x_")){ 
-    			log.finer(line);
+    			System.out.println(line);
     			String[] vars = line.split("\\*|\\+");
     			for(String inner : vars) {
     				variables.add(inner.trim());

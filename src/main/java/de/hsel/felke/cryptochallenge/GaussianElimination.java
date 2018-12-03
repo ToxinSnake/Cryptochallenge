@@ -14,10 +14,8 @@ package de.hsel.felke.cryptochallenge;
  ******************************************************************************/
 
 public class GaussianElimination {
-    private static final double EPSILON = 1e-10;
-
     // Gaussian elimination with partial pivoting
-    public static double[] lsolve(double[][] A, double[] b) {
+    public static int[][] lsolve(int[][] A, int[] b) {
         int n = b.length;
 
         for (int p = 0; p < n; p++) {
@@ -29,54 +27,31 @@ public class GaussianElimination {
                     max = i;
                 }
             }
-            double[] temp = A[p]; A[p] = A[max]; A[max] = temp;
-            double   t    = b[p]; b[p] = b[max]; b[max] = t;
+            int[] temp = A[p]; A[p] = A[max]; A[max] = temp;
+            int   t    = b[p]; b[p] = b[max]; b[max] = t;
 
             // singular or nearly singular
-            if (Math.abs(A[p][p]) <= EPSILON) {
-                throw new ArithmeticException("Matrix is singular or nearly singular");
-            }
 
             // pivot within A and b
             for (int i = p + 1; i < n; i++) {
-                double alpha = A[i][p] / A[p][p];
+                int alpha = A[i][p] / A[p][p];
                 b[i] -= alpha * b[p];
                 for (int j = p; j < n; j++) {
                     A[i][j] -= alpha * A[p][j];
                 }
             }
         }
-
+        return A;
+        
         // back substitution
-        double[] x = new double[n];
-        for (int i = n - 1; i >= 0; i--) {
-            double sum = 0.0;
-            for (int j = i + 1; j < n; j++) {
-                sum += A[i][j] * x[j];
-            }
-            x[i] = (b[i] - sum) / A[i][i];
-        }
-        return x;
-    }
-
-
-    // sample client
-//    public static void main(String[] args) {
-//        int n = 3;
-//        double[][] A = {
-//            { 0, 1,  1 },
-//            { 2, 4, -2 },
-//            { 0, 3, 15 }
-//        };
-//        double[] b = { 4, 2, 36 };
-//        double[] x = lsolve(A, b);
-//
-//
-//        // print results
-//        for (int i = 0; i < n; i++) {
-//            System.out.println(x[i]);
+//        int[] x = new int[n];
+//        for (int i = n - 1; i >= 0; i--) {
+//            int sum = 0;
+//            for (int j = i + 1; j < n; j++) {
+//                sum += A[i][j] * x[j];
+//            }
+//            x[i] = (b[i] - sum) / A[i][i];
 //        }
-//
-//    }
-
+//        return x;
+    }
 }
