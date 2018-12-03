@@ -31,7 +31,7 @@ public class Cracker
         
         System.out.println("Trying to load public key...");
         try {
-        	pubKey = getPublicKey("3Bit.txt");
+        	pubKey = getPublicKey("5Bit.txt");
         } catch (IOException e) {
         	e.printStackTrace();
         	System.exit(1);
@@ -51,6 +51,18 @@ public class Cracker
 		for (int i = 0; i < fullMatrix.length; i++) {
 			for (int j = 0; j < fullMatrix[i].length; j++) {
 				System.out.print(fullMatrix[i][j] + " ");
+			}
+			System.out.println();
+		}        
+        //Debug Ende
+		
+		int[][] reduced = GaussianElimination.rref(fullMatrix);
+		
+		//Debug Anfang
+		System.out.println("Reduced Matrix: ");
+		for (int i = 0; i < reduced.length; i++) {
+			for (int j = 0; j < reduced[i].length; j++) {
+				System.out.print(reduced[i][j] + " ");
 			}
 			System.out.println();
 		}        
