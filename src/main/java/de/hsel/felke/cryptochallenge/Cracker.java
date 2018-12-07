@@ -32,7 +32,7 @@ public class Cracker
         
         System.out.println("Trying to load public key...");
         try {
-        	pubKey = getPublicKey("45Bit.txt");
+        	pubKey = getPublicKey("3Bit.txt");
         } catch (IOException e) {
         	e.printStackTrace();
         	System.exit(1);
@@ -84,9 +84,9 @@ public class Cracker
     	int M = getM(matrix); //Zeilenanzahl
     	int N = getN(matrix); //Spaltenanzahl
     	
-    	while(piRow < N && piCol < M) {
+    	while(piRow < M && piCol < N) {
     		int elementPos = -1;
-    		for(int i=piRow; i < N; i++) {
+    		for(int i=piRow; i < M; i++) {
     			//Pivot-Element gefunden
     			if(matrix[i][piCol] == 1) {
     				elementPos = i;
@@ -103,7 +103,7 @@ public class Cracker
     			}
     			
     			//Alle Zeilen XOR die eine 1 in piRow haben und unter dem Pivot-Element sind
-    			for(int i=0; i < N; i++) {
+    			for(int i=0; i < M; i++) {
     				//Wenn Zeile gefunden die eine 1 unter dem Pivot-Element hat
     				if(i != piRow && matrix[i][piCol] == 1) {
     					xorRow(matrix, piRow, i);
@@ -132,11 +132,11 @@ public class Cracker
     	matrix[rowNoB] = rowA;
     }
     
-    private static int getM(int [][] matrix) {
+    private static int getN(int [][] matrix) {
     	return matrix[0].length;
     }
     
-    private static int getN(int [][] matrix) {
+    private static int getM(int [][] matrix) {
     	return matrix.length;
     }
 
