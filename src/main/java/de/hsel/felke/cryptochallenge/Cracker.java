@@ -17,6 +17,8 @@ import net.objecthunter.exp4j.ExpressionBuilder;
 
 public class Cracker 
 {	
+	
+	private static final boolean debug = true;
 
     public static void main(String[] args)
     {
@@ -32,7 +34,7 @@ public class Cracker
         
         System.out.println("Trying to load public key...");
         try {
-        	pubKey = getPublicKey("3Bit.txt");
+        	pubKey = getPublicKey("5Bit.txt");
         } catch (IOException e) {
         	e.printStackTrace();
         	System.exit(1);
@@ -50,13 +52,15 @@ public class Cracker
         System.out.println("Done!");
 
         //Debug Anfang
-//		System.out.println("Full Matrix: ");
-//		for (int i = 0; i < fullMatrix.length; i++) {
-//			for (int j = 0; j < fullMatrix[i].length; j++) {
-//				System.out.print(fullMatrix[i][j] + " ");
-//			}
-//			System.out.println();
-//		}        
+		if (debug) {
+			System.out.println("Full Matrix: ");
+			for (int i = 0; i < fullMatrix.length; i++) {
+				for (int j = 0; j < fullMatrix[i].length; j++) {
+					System.out.print(fullMatrix[i][j] + " ");
+				}
+				System.out.println();
+			}
+		}		      
         //Debug Ende
 		
 		System.out.println("Computing reduced row echelon form...");
@@ -64,13 +68,15 @@ public class Cracker
 		System.out.println("Done!");
 	
 		//Debug Anfang
-		System.out.println("Reduced Matrix: ");
-		for (int i = 0; i < reduced.length; i++) {
-			for (int j = 0; j < reduced[i].length; j++) {
-				System.out.print(reduced[i][j] + " ");
+		if (debug) {
+			System.out.println("Reduced Matrix: ");
+			for (int i = 0; i < reduced.length; i++) {
+				for (int j = 0; j < reduced[i].length; j++) {
+					System.out.print(reduced[i][j] + " ");
+				}
+				System.out.println();
 			}
-			System.out.println();
-		}        
+		}
         //Debug Ende
 
     }
@@ -104,7 +110,7 @@ public class Cracker
     			
     			//Alle Zeilen XOR die eine 1 in piRow haben und unter dem Pivot-Element sind
     			for(int i=0; i < M; i++) {
-    				//Wenn Zeile gefunden die eine 1 unter dem Pivot-Element hat
+    				//Rücksubstitution
     				if(i != piRow && matrix[i][piCol] == 1) {
     					xorRow(matrix, piRow, i);
     				}
@@ -125,6 +131,7 @@ public class Cracker
 		}
     }
     
+    //Tauscht zwei Reihen miteinander
     private static void swapRow(int[][] matrix, int rowNoA, int rowNoB) {
     	int[] rowA = matrix[rowNoA];
     	int[] rowB = matrix[rowNoB];    	
@@ -140,7 +147,7 @@ public class Cracker
     	return matrix.length;
     }
 
-	public static int[][] generateMatrix(ArrayList<Expression> pubKey, HashSet<String> allVars) {
+	private static int[][] generateMatrix(ArrayList<Expression> pubKey, HashSet<String> allVars) {
 		int varCount;
 		Random rand = new Random();
 		varCount = allVars.size();
@@ -166,11 +173,13 @@ public class Cracker
         	}
         	
         	//Debug Anfang
-//			System.out.print("Cleartext: ");
-//			for (int j = 0; j < clearText.length; j++) {
-//				System.out.print(clearText[j] + " ");
-//			}
-//			System.out.println();   	
+        	if(debug) {
+				System.out.print("Cleartext: ");
+				for (int j = 0; j < clearText.length; j++) {
+					System.out.print(clearText[j] + " ");
+				}
+				System.out.println();
+        	} 	
         	//Debug Ende
         	
         	HashMap<String, Double> values = new HashMap<String, Double>();
@@ -180,31 +189,32 @@ public class Cracker
         		values.put(iterator, varVal);
         	}
         	
-//        	System.out.print("Chitext: ");
+        	if(debug) System.out.print("Chitext: ");
         	int expressionCounter = 0;
         	for(Expression iterator : pubKey) {
         		iterator.setVariables(values);
         		cipherText[expressionCounter] = (int)iterator.evaluate()%2;       		
-//        		System.out.print(cipherText[expressionCounter] + " ");
+        		if(debug) System.out.print(cipherText[expressionCounter] + " ");
         		expressionCounter++;
         	}
-//        	System.out.println();
+        	if(debug) System.out.println();
+
         	
-//        	System.out.print("Resulting Row: ");
+        	if(debug) System.out.print("Resulting Row: ");
         	int rowCounter = 0;
         	for(int j = 0; j < clearText.length; j++) {
         		for(int s = 0; s < cipherText.length; s++) {
         			fullMatrix[i][rowCounter] = clearText[j]*cipherText[s];
-//        			System.out.print(fullMatrix[i][rowCounter]+" ");
+        			if(debug) System.out.print(fullMatrix[i][rowCounter]+" ");
         			rowCounter++;
         		}
         	}
-//        	System.out.println("\n------------");
+        	if(debug) System.out.println("\n------------");
         }
 		return fullMatrix;
 	}
     
-    public static ArrayList<Expression> getPublicKey(String path) throws IOException {   	
+    private static ArrayList<Expression> getPublicKey(String path) throws IOException {   	
     	ArrayList<Expression> pubKey = new ArrayList<Expression>();
     	HashSet<String> variables = new HashSet<String>();
 
@@ -215,7 +225,7 @@ public class Cracker
     	for(String outer : splits) {
     		String line = outer.trim();
     		if(line.contains("x_")){ 
-//    			System.out.println(line);
+    			if(debug) System.out.println(line);
     			String[] vars = line.split("\\*|\\+");
     			for(String inner : vars) {
     				variables.add(inner.trim());
@@ -228,11 +238,5 @@ public class Cracker
     		}
     	}
     	return pubKey;
-    }
-    
-    public static int[][] calcRowEchelon(int[][] matrix){
-		
-    	//TODO
-    	return matrix;
     }
 }
