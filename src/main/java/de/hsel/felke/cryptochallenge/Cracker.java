@@ -45,21 +45,25 @@ public class Cracker
         }
         
         //Resultierende Matrix initialisieren
+        System.out.println("Generating the full matrix...");
         int[][] fullMatrix = generateMatrix(pubKey, allVars);
+        System.out.println("Done!");
 
         //Debug Anfang
-		System.out.println("Full Matrix: ");
-		for (int i = 0; i < fullMatrix.length; i++) {
-			for (int j = 0; j < fullMatrix[i].length; j++) {
-				System.out.print(fullMatrix[i][j] + " ");
-			}
-			System.out.println();
-		}        
+//		System.out.println("Full Matrix: ");
+//		for (int i = 0; i < fullMatrix.length; i++) {
+//			for (int j = 0; j < fullMatrix[i].length; j++) {
+//				System.out.print(fullMatrix[i][j] + " ");
+//			}
+//			System.out.println();
+//		}        
         //Debug Ende
 		
-		int[][] reduced = GaussianElimination.rref(fullMatrix);
-//		
-//		//Debug Anfang
+		System.out.println("Computing reduced row echelon form...");
+		int[][] reduced = reducedRowEchelon(fullMatrix);
+		System.out.println("Done!");
+	
+		//Debug Anfang
 		System.out.println("Reduced Matrix: ");
 		for (int i = 0; i < reduced.length; i++) {
 			for (int j = 0; j < reduced[i].length; j++) {
@@ -69,6 +73,71 @@ public class Cracker
 		}        
         //Debug Ende
 
+    }
+    
+    //Siehe https://en.wikipedia.org/wiki/Gaussian_elimination#Pseudocode
+    //Siehe https://en.wikipedia.org/wiki/Row_echelon_form#Reduced_row_echelon_form
+    //Ein Pivot-Element ist die erste 1 die in einer Spalte gefunden wird
+    public static int[][] reducedRowEchelon(int[][] matrix){
+    	int piRow = 0; //Pivot-Reihe V
+    	int piCol = 0; //Pivot-Spalte >
+    	int M = getM(matrix); //Zeilenanzahl
+    	int N = getN(matrix); //Spaltenanzahl
+    	
+    	while(piRow < N && piCol < M) {
+    		int elementPos = -1;
+    		for(int i=piRow; i < N; i++) {
+    			//Pivot-Element gefunden
+    			if(matrix[i][piCol] == 1) {
+    				elementPos = i;
+    				break;
+    			}
+    		}
+    		//Wenn kein Pivot-Element existiert mit nächster Spalte weiter
+    		if(elementPos == -1) {
+    			piCol++;
+    		} else {
+    			//Wenn Pivot-Element nicht in Reihe ist, für die ein Pivot-Element gesucht wird
+    			if(elementPos != piRow) {
+    				swapRow(matrix, piRow, elementPos);
+    			}
+    			
+    			//Alle Zeilen XOR die eine 1 in piRow haben und unter dem Pivot-Element sind
+    			for(int i=0; i < N; i++) {
+    				//Wenn Zeile gefunden die eine 1 unter dem Pivot-Element hat
+    				if(i != piRow && matrix[i][piCol] == 1) {
+    					xorRow(matrix, piRow, i);
+    				}
+    			}
+    			piRow++;
+    			piCol++;    			
+    		}    		
+    	}   	    	
+    	return matrix;
+    }
+    
+    //Row A ist oben, Row B wird verundet
+    //^ = XOR
+    private static void xorRow(int[][] matrix, int rowNoA, int rowNoB) {
+    	int[] rowA = matrix[rowNoA];
+		for (int i = 0; i < matrix[0].length; i++) {
+			matrix[rowNoB][i] = matrix[rowNoB][i]^rowA[i];
+		}
+    }
+    
+    private static void swapRow(int[][] matrix, int rowNoA, int rowNoB) {
+    	int[] rowA = matrix[rowNoA];
+    	int[] rowB = matrix[rowNoB];    	
+    	matrix[rowNoA] = rowB;
+    	matrix[rowNoB] = rowA;
+    }
+    
+    private static int getM(int [][] matrix) {
+    	return matrix[0].length;
+    }
+    
+    private static int getN(int [][] matrix) {
+    	return matrix.length;
     }
 
 	public static int[][] generateMatrix(ArrayList<Expression> pubKey, HashSet<String> allVars) {
@@ -97,11 +166,11 @@ public class Cracker
         	}
         	
         	//Debug Anfang
-			System.out.print("Cleartext: ");
-			for (int j = 0; j < clearText.length; j++) {
-				System.out.print(clearText[j] + " ");
-			}
-			System.out.println();   	
+//			System.out.print("Cleartext: ");
+//			for (int j = 0; j < clearText.length; j++) {
+//				System.out.print(clearText[j] + " ");
+//			}
+//			System.out.println();   	
         	//Debug Ende
         	
         	HashMap<String, Double> values = new HashMap<String, Double>();
@@ -111,28 +180,27 @@ public class Cracker
         		values.put(iterator, varVal);
         	}
         	
-        	System.out.print("Chitext: ");
+//        	System.out.print("Chitext: ");
         	int expressionCounter = 0;
         	for(Expression iterator : pubKey) {
         		iterator.setVariables(values);
         		cipherText[expressionCounter] = (int)iterator.evaluate()%2;       		
-        		System.out.print(cipherText[expressionCounter] + " ");
+//        		System.out.print(cipherText[expressionCounter] + " ");
         		expressionCounter++;
         	}
-        	System.out.println();
+//        	System.out.println();
         	
-        	System.out.print("Resulting Row: ");
+//        	System.out.print("Resulting Row: ");
         	int rowCounter = 0;
         	for(int j = 0; j < clearText.length; j++) {
         		for(int s = 0; s < cipherText.length; s++) {
         			fullMatrix[i][rowCounter] = clearText[j]*cipherText[s];
-        			System.out.print(fullMatrix[i][rowCounter]+" ");
+//        			System.out.print(fullMatrix[i][rowCounter]+" ");
         			rowCounter++;
         		}
         	}
-        	System.out.println("\n------------");
+//        	System.out.println("\n------------");
         }
-        System.out.println("Done!");
 		return fullMatrix;
 	}
     
