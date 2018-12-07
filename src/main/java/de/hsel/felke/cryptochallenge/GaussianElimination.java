@@ -58,11 +58,11 @@ public class GaussianElimination {
 			}
 			lead++;
 		}
-//		for(int i = 0; i < matrix.length; i++) {
-//			for(int j = 0; j < matrix[i].length; j++) {
-//				matrix[i][j] = Math.abs(matrix[i][j])%2;
-//			}
-//		}		
+		for(int i = 0; i < matrix.length; i++) {
+			for(int j = 0; j < matrix[i].length; j++) {
+				matrix[i][j] = Math.abs(matrix[i][j])%2;
+			}
+		}		
 		return matrix;
 	}
 }

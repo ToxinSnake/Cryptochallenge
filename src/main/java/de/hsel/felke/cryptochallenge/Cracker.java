@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
@@ -31,7 +32,7 @@ public class Cracker
         
         System.out.println("Trying to load public key...");
         try {
-        	pubKey = getPublicKey("5Bit.txt");
+        	pubKey = getPublicKey("45Bit.txt");
         } catch (IOException e) {
         	e.printStackTrace();
         	System.exit(1);
@@ -57,8 +58,8 @@ public class Cracker
         //Debug Ende
 		
 		int[][] reduced = GaussianElimination.rref(fullMatrix);
-		
-		//Debug Anfang
+//		
+//		//Debug Anfang
 		System.out.println("Reduced Matrix: ");
 		for (int i = 0; i < reduced.length; i++) {
 			for (int j = 0; j < reduced[i].length; j++) {
@@ -72,6 +73,7 @@ public class Cracker
 
 	public static int[][] generateMatrix(ArrayList<Expression> pubKey, HashSet<String> allVars) {
 		int varCount;
+		Random rand = new Random();
 		varCount = allVars.size();
         System.out.println("Variables found: "+varCount);
         System.out.println("Allocating memory for "+2*varCount*varCount+"*"+varCount*varCount+" matrix...");
@@ -79,15 +81,14 @@ public class Cracker
         System.out.println("Generating "+2*varCount*varCount+" cleartext-ciphertext pairs...");
         
         //2n^2 Klartexte erzeugen, einsetzen und resultierende Zeile erzeugen
-        for(int i = 0; i < (2*varCount*varCount); i++ ) {
-        	String binary = Integer.toBinaryString(i+1);
+        for(int i = 0; i < (2*varCount*varCount); i++ ) {        	
         	int [] clearText = new int[varCount];
         	int [] cipherText = new int[varCount];
         	
-        	//Wenn 2n^2 > 2^n
-        	if (binary.length() > clearText.length) {
-        		System.out.println("Abort! Generated all possible cleartexts!");
-        		break;
+        	//Für jedes Bit eine 50% chance für 0 oder 1 sichern.
+        	String binary = "";
+        	for(int j = 0; j < varCount; j++) {
+        		binary = Integer.toString(rand.nextInt(2)) + binary;
         	}
         	
         	//Binary String zahl für zahl in int array übertragen
@@ -146,7 +147,7 @@ public class Cracker
     	for(String outer : splits) {
     		String line = outer.trim();
     		if(line.contains("x_")){ 
-    			System.out.println(line);
+//    			System.out.println(line);
     			String[] vars = line.split("\\*|\\+");
     			for(String inner : vars) {
     				variables.add(inner.trim());
