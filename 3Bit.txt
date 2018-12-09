@@ -4,3 +4,5 @@ Public Key:
     x_1*x_3 + x_1 + x_2 + x_3,
     x_1*x_2 + x_3
 ]
+ Chitext:
+[ 0, 0, 1 ]
