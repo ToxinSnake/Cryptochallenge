@@ -3,14 +3,12 @@ package de.hsel.felke.cryptochallenge;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
 
 import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
@@ -18,25 +16,28 @@ import net.objecthunter.exp4j.ExpressionBuilder;
 public class Cracker 
 {	
 	
-	private static final boolean debug = true;
+	private static final boolean debug = false;
 
     public static void main(String[] args)
-    {
-    	System.out.println( "Cryptochallenge!" );
-        
+    {    	        
 //        if(args.length == 0) {
 //        	System.out.println("Missing Filepath!\nUsage: Cracker publickey.txt");
 //        	System.exit(1);
 //        }
+    	
+        Date startTime = new Date();
+        Date endTime = new Date();
+        SimpleDateFormat ft = new SimpleDateFormat("HH:mm:ss.SSS");
+        System.out.println("Start: "+ft.format(startTime));
         
         ArrayList<Expression> pubKey = null;
         HashSet<String> allVars = new HashSet<String>();
         
         System.out.println("Trying to load public key...");
         try {
-        	pubKey = getPublicKey("5Bit.txt");
+        	pubKey = getPublicKey("3Bit.txt");
         } catch (IOException e) {
-        	e.printStackTrace();
+        	System.out.println("File not found!\nExiting.");
         	System.exit(1);
         }
         System.out.println("Loading successfull!");
@@ -79,14 +80,19 @@ public class Cracker
 		}
         //Debug Ende
 
+		
+		endTime.setTime(System.currentTimeMillis());
+		System.out.println("End: "+ft.format(endTime));
+		Date timeNeeded = new Date(endTime.getTime() - startTime.getTime() - 3600000);
+		System.out.println("Time needed: "+ft.format(timeNeeded));
     }
     
     //Siehe https://en.wikipedia.org/wiki/Gaussian_elimination#Pseudocode
     //Siehe https://en.wikipedia.org/wiki/Row_echelon_form#Reduced_row_echelon_form
     //Ein Pivot-Element ist die erste 1 die in einer Spalte gefunden wird
     public static int[][] reducedRowEchelon(int[][] matrix){
-    	int piRow = 0; //Pivot-Reihe V
-    	int piCol = 0; //Pivot-Spalte >
+    	int piRow = 0; //Pivot-Reihe 
+    	int piCol = 0; //Pivot-Spalte 
     	int M = getM(matrix); //Zeilenanzahl
     	int N = getN(matrix); //Spaltenanzahl
     	
@@ -106,8 +112,7 @@ public class Cracker
     			//Wenn Pivot-Element nicht in Reihe ist, für die ein Pivot-Element gesucht wird
     			if(elementPos != piRow) {
     				swapRow(matrix, piRow, elementPos);
-    			}
-    			
+    			}   			
     			//Alle Zeilen XOR die eine 1 in piRow haben und unter dem Pivot-Element sind
     			for(int i=0; i < M; i++) {
     				//Rücksubstitution
@@ -220,16 +225,20 @@ public class Cracker
 
     	byte[] allTextRaw = Files.readAllBytes(Paths.get(path));
     	String allText = new String(allTextRaw, "UTF-8");  	
+    	//Splitten wenn [ oder , oder ] gefunden wird
     	String[] splits = allText.split("\\[|,|\\]");
     	
     	for(String outer : splits) {
     		String line = outer.trim();
+    		//Wenn Element mindestens eine Variable enthält
     		if(line.contains("x_")){ 
     			if(debug) System.out.println(line);
+    			//Element nach jeder Operation splitten um alle Variablen zu finden
     			String[] vars = line.split("\\*|\\+");
     			for(String inner : vars) {
     				variables.add(inner.trim());
     			}
+    			//Expression aus der Zeile bilden und alle Variablen mitgeben
     			Expression exp = new ExpressionBuilder(line)
     					.variables(variables)
     					.build();
