@@ -6,3 +6,7 @@ PublicKey [
     x_1*x_3 + x_2*x_3 + x_2*x_4 + x_4*x_5 + x_2 + x_4,
     x_1*x_2 + x_1*x_4 + x_3*x_4 + x_4*x_5 + x_1 + x_2 + x_5
 ]
+ Chitext: 
+[ 1, 0, 0, 0, 1 ]
+ Anzahl Basiselemente/Spezielle Relationen:
+5

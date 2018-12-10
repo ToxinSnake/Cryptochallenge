@@ -13,13 +13,16 @@ import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.swing.text.AsyncBoxView.ChildLocator;
+
 import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
 
 public class Cracker {
 
-	private static final boolean debug = true;
-	private static final String path = "5Bit.txt";
+	private static final boolean debug = false;
+	private static final boolean debug45 = false;
+	private static final String path = "45Bit.txt";
 	public static int numberOfVars;
 
 	public static void main(String[] args) {
@@ -114,11 +117,78 @@ public class Cracker {
 		System.out.println("Done!");
 		
 		//TODO: Ciphertext in Spezielle Lösungen einsetzen und Gleichungssystem reduzieren
-
+		System.out.println("Inserting Chitext...");
+		int[][] inserted = insertChitext(specials, chitext);
+		System.out.println("Done!");
+		
+		//Debug Anfang
+		if (debug) {
+			System.out.println("After Chitext insertion : ");
+			for (int i = 0; i < inserted.length; i++) {
+				for (int j = 0; j < inserted[i].length; j++) {
+					System.out.print(inserted[i][j] + " ");
+				}
+				System.out.println();
+			}
+		}		
+		//Debug Ende
+		
+		System.out.println("Reducing chitext matrix...");
+		inserted = reducedRowEchelon(inserted);
+		System.out.println("Done!");
+		
+		//Debug Anfang
+		if (debug) {
+			System.out.println("Reduced insertion matrix : ");
+			for (int i = 0; i < inserted.length; i++) {
+				for (int j = 0; j < inserted[i].length; j++) {
+					System.out.print(inserted[i][j] + " ");
+				}
+				System.out.println();
+			}
+		}		
+		//Debug Ende
+		
+		//Spezielle Lösungen von inserted finden
+		System.out.println("Calculating special solutions...");
+		inserted = specialSolutions(inserted);
+		System.out.println("Done!");
+		
+		//Debug Anfang
+		if (debug45) {
+			System.out.println("Special solutions of inserted : ");
+			for (int i = 0; i < inserted.length; i++) {
+				for (int j = 0; j < inserted[i].length; j++) {
+					System.out.print(inserted[i][j] + " ");
+				}
+				System.out.println();
+			}
+		}		
+		//Debug Ende
+		
+		//Alle Werte aus inserted encrypten und mit chitext vergleichen
+		for(int i = 0; i < inserted.length; i++) {
+			int[] tempCipher = encrypt(pubKey, allVars, inserted[i]);
+			if(Arrays.equals(tempCipher, chitext)) {
+				System.out.println("Cleartext found: ");
+				for(int j = 0; j < numberOfVars; j++) {
+					System.out.print(inserted[i][j]+" ");
+				}
+				System.out.println();
+				endTime.setTime(System.currentTimeMillis());
+				System.out.println("End: " + ft.format(endTime));
+				Date timeNeeded = new Date(endTime.getTime() - startTime.getTime() - 3600000);
+				System.out.println("Time needed: " + ft.format(timeNeeded));
+				System.exit(0);
+			}
+		}
+		
+		System.out.println("Cleartext not found!");		
 		endTime.setTime(System.currentTimeMillis());
 		System.out.println("End: " + ft.format(endTime));
 		Date timeNeeded = new Date(endTime.getTime() - startTime.getTime() - 3600000);
 		System.out.println("Time needed: " + ft.format(timeNeeded));
+		System.exit(1);
 	}
 
 	/**
@@ -228,37 +298,32 @@ public class Cracker {
 
 			HashMap<String, Double> values = new HashMap<String, Double>();
 			for (String iterator : allVars) {
-				int varNum = iterator.charAt(2) - '0';
+//				int varNum = iterator.charAt(2) - '0';
+				int varNum = Integer.parseInt(iterator.substring(2));
 				double varVal = clearText[varNum - 1];
 				values.put(iterator, varVal);
 			}
 
-			if (debug)
-				System.out.print("Chitext: ");
+			if (debug) System.out.print("Chitext: ");
 			int expressionCounter = 0;
 			for (Expression iterator : pubKey) {
 				iterator.setVariables(values);
 				cipherText[expressionCounter] = (int) iterator.evaluate() % 2;
-				if (debug)
-					System.out.print(cipherText[expressionCounter] + " ");
+				if (debug) System.out.print(cipherText[expressionCounter] + " ");
 				expressionCounter++;
 			}
-			if (debug)
-				System.out.println();
+			if (debug) System.out.println();
 
-			if (debug)
-				System.out.print("Resulting Row: ");
+			if (debug) System.out.print("Resulting Row: ");
 			int rowCounter = 0;
 			for (int j = 0; j < clearText.length; j++) {
 				for (int s = 0; s < cipherText.length; s++) {
 					fullMatrix[i][rowCounter] = clearText[j] * cipherText[s];
-					if (debug)
-						System.out.print(fullMatrix[i][rowCounter] + " ");
+					if (debug) System.out.print(fullMatrix[i][rowCounter] + " ");
 					rowCounter++;
 				}
 			}
-			if (debug)
-				System.out.println("\n------------");
+			if (debug) System.out.println("\n------------");
 		}
 		return fullMatrix;
 	}
@@ -379,14 +444,14 @@ public class Cracker {
 		openVars.removeAll(fixedVars);
 
 		// Debug Anfang
-		if (debug) {
-			System.out.println("Fixed variables:");
+		if (debug45) {
+			System.out.println("Fixed variables: "+fixedVars.size());
 			System.out.print("[ ");
 			for (Integer iterator : fixedVars) {
 				System.out.print(iterator + " ");
 			}
 			System.out.println("]");
-			System.out.println("Open variables:");
+			System.out.println("Open variables: "+openVars.size());
 			System.out.print("[ ");
 			for (Integer iterator : openVars) {
 				System.out.print(iterator + " ");
@@ -410,6 +475,14 @@ public class Cracker {
 			int[] special = solveMatrix(copy, openVarIndex);
 			specialSolutions.add(special);
 		}
+		
+		int[][] rtValue = new int[specialSolutions.size()][numberOfVars*numberOfVars];
+		int counter = 0;
+		//Hashset in int Array übertragen
+		for(int[] solution : specialSolutions) {
+			rtValue[counter] = solution;
+			counter++;
+		}
 
 		// Debug Anfang
 		if (debug) {
@@ -423,7 +496,7 @@ public class Cracker {
 			}
 		}
 		// Debug Ende
-		return matrix;
+		return rtValue;
 	}
 
 	/**
@@ -489,5 +562,48 @@ public class Cracker {
 			}
 		}
 		return -1;
+	}
+	
+	public static int[][] insertChitext(int[][] specials, int[] chitext){
+		int[][] inserted = new int[specials.length][numberOfVars];
+		int[] temp = new int[numberOfVars*numberOfVars];
+		
+		for(int sp = 0; sp < specials.length; sp++) {
+			for(int outer = 0; outer < specials[sp].length;) {
+				for(int inner = 0; inner < chitext.length; inner++, outer++) {
+					temp[outer] = specials[sp][outer] * chitext[inner];
+				}
+			}
+			
+			//Reduzieren
+			for(int outer = 0, insertCounter=0; outer < temp.length; insertCounter++) {
+				int currentVar = 0;
+				for(int inner = 0; inner < numberOfVars; inner++, outer++) {
+					currentVar = (currentVar + temp[outer]) % 2;
+				}
+				inserted[sp][insertCounter] = currentVar;
+			}
+		}
+		return inserted;
+	}
+	
+	public static int[] encrypt(ArrayList<Expression> pubKey, HashSet<String> allVars, int[] clearText) {
+		int[] cipherText = new int[numberOfVars];
+		HashMap<String, Double> values = new HashMap<String, Double>();
+		for (String iterator : allVars) {
+			int varNum = Integer.parseInt(iterator.substring(2));
+			double varVal = clearText[varNum - 1];
+			values.put(iterator, varVal);
+		}
+		if (debug) System.out.print("Chitext: ");
+		int expressionCounter = 0;
+		for (Expression iterator : pubKey) {
+			iterator.setVariables(values);
+			cipherText[expressionCounter] = (int) iterator.evaluate() % 2;
+			if (debug) System.out.print(cipherText[expressionCounter] + " ");
+			expressionCounter++;
+		}
+		if (debug) System.out.println();
+		return cipherText;
 	}
 }
