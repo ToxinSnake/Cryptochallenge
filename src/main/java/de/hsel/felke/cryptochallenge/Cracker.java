@@ -21,15 +21,14 @@ import net.objecthunter.exp4j.ExpressionBuilder;
 public class Cracker {
 
 	private static final boolean debug = false;
-	private static final boolean debug45 = false;
 	private static final String path = "45Bit.txt";
 	public static int numberOfVars;
 
 	public static void main(String[] args) {
-//        if(args.length == 0) {
-//        	System.out.println("Missing Filepath!\nUsage: Cracker publickey.txt");
-//        	System.exit(1);
-//        }
+        if(args.length == 0) {
+        	System.out.println("Missing Filepath!\nUsage: Cracker publickey.txt");
+        	System.exit(1);
+        }
 
 		Date startTime = new Date();
 		Date endTime = new Date();
@@ -42,7 +41,7 @@ public class Cracker {
 
 		System.out.println("Trying to load public key...");
 		try {
-			pubKey = getPublicKey(path);
+			pubKey = getPublicKey(args[0]);
 		} catch (IOException e) {
 			System.out.println("File not found!\nExiting.");
 			System.exit(1);
@@ -58,7 +57,7 @@ public class Cracker {
 		//Ciphertext auslesen
 		System.out.println("Searching for Chitext...");
 		try {
-			chitext = getChitext(path);
+			chitext = getChitext(args[0]);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -155,7 +154,7 @@ public class Cracker {
 		System.out.println("Done!");
 		
 		//Debug Anfang
-		if (debug45) {
+		if (debug) {
 			System.out.println("Special solutions of inserted : ");
 			for (int i = 0; i < inserted.length; i++) {
 				for (int j = 0; j < inserted[i].length; j++) {
@@ -444,7 +443,7 @@ public class Cracker {
 		openVars.removeAll(fixedVars);
 
 		// Debug Anfang
-		if (debug45) {
+		if (debug) {
 			System.out.println("Fixed variables: "+fixedVars.size());
 			System.out.print("[ ");
 			for (Integer iterator : fixedVars) {
