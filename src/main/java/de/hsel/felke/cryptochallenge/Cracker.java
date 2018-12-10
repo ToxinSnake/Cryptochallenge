@@ -10,13 +10,16 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
 
 public class Cracker {
 
-	private static final boolean debug = false;
+	private static final boolean debug = true;
+	private static final String path = "5Bit.txt";
 	public static int numberOfVars;
 
 	public static void main(String[] args) {
@@ -31,11 +34,12 @@ public class Cracker {
 		System.out.println("Start: " + ft.format(startTime));
 
 		ArrayList<Expression> pubKey = null;
+		int[] chitext = null;
 		HashSet<String> allVars = new HashSet<String>();
 
 		System.out.println("Trying to load public key...");
 		try {
-			pubKey = getPublicKey("45Bit.txt");
+			pubKey = getPublicKey(path);
 		} catch (IOException e) {
 			System.out.println("File not found!\nExiting.");
 			System.exit(1);
@@ -48,7 +52,29 @@ public class Cracker {
 		}
 		numberOfVars = allVars.size();
 		
-		//TODO: Ciphertext auslesen
+		//Ciphertext auslesen
+		System.out.println("Searching for Chitext...");
+		try {
+			chitext = getChitext(path);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		//Prüfen ob Chitext gefunden und printen
+		if(chitext == null) {
+			System.out.println("No Chitext found! Aborting!");
+			System.exit(1);
+		} else {
+			System.out.println("Chitext found!");
+			System.out.println("Chitext:");
+			System.out.print("[ ");
+			for (int i = 0; i < chitext.length; i++) {
+				System.out.print(chitext[i] + " ");
+			}
+			System.out.println("]");
+		}
+		
 
 		// Resultierende Matrix initialisieren
 		System.out.println("Generating the full matrix...");
@@ -130,6 +156,29 @@ public class Cracker {
 			}
 		}
 		return pubKey;
+	}
+	
+	public static int[] getChitext(String path) throws IOException {
+		byte[] allTextRaw = Files.readAllBytes(Paths.get(path));
+		String allText = new String(allTextRaw, "UTF-8");
+		String Chitext;
+		
+		
+		//Mit Regex nach "Chitext" suchen
+		Pattern pattern = Pattern.compile("Chitext[^\\[]*\\[[^\\]]*]");
+		Matcher matcher = pattern.matcher(allText);
+		if(!matcher.find()) {
+			return null;
+		}
+		Chitext = matcher.group(0);
+		String[] splits = Chitext.split("\\[|,|\\]");
+		
+		//An index 0 von splits steht immer "Chitext", der Rest sind immer Zahlen
+		int[] chiAsArray = new int[splits.length - 1];
+		for(int i = 1, j = 0; i < splits.length; i++, j++) {
+			chiAsArray[j] = Integer.parseInt(splits[i].trim());
+		}
+		return chiAsArray;
 	}
 
 	/**
