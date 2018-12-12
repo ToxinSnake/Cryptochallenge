@@ -13,15 +13,12 @@ import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.swing.text.AsyncBoxView.ChildLocator;
-
 import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
 
 public class Cracker {
 
 	private static final boolean debug = false;
-	private static final String path = "45Bit.txt";
 	public static int numberOfVars;
 
 	public static void main(String[] args) {
