@@ -21,6 +21,28 @@
 					</archive>
 				</configuration>
 		    </plugin>
+		<plugin>
+	        <groupId>org.apache.maven.plugins</groupId>
+	        <artifactId>maven-assembly-plugin</artifactId>
+	        <executions>
+          		<execution>
+            		<goals>
+              			<goal>attached</goal>
+           			</goals>
+            		<phase>package</phase>
+            		<configuration>
+             			<descriptorRefs>
+                			<descriptorRef>jar-with-dependencies</descriptorRef>
+              			</descriptorRefs>
+              			<archive>
+                			<manifest>
+                  				<mainClass>de.hsel.felke.cryptochallenge.Cracker</mainClass>
+               				</manifest>
+              			</archive>
+            		</configuration>
+         		 </execution>
+        	</executions>
+      </plugin>
     	</plugins>
 		<finalName>Hackerman</finalName>
 	</build>
