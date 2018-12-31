@@ -265,7 +265,7 @@ public class Cracker2 {
 				.println("Allocating memory for " + 2 * varCount * varCount + "*" + varCount * varCount + " matrix...");
 		byte fullMatrix[][] = new byte[2 * varCount * varCount][varCount * varCount];
 		System.out.println("Generating " + 2 * varCount * varCount + " cleartext-ciphertext pairs...");
-
+		
 		// 2n^2 Klartexte erzeugen, einsetzen und resultierende Zeile erzeugen
 		for (int i = 0; i < (2 * varCount * varCount); i++) {
 			byte[] clearText = new byte[varCount];
@@ -274,7 +274,7 @@ public class Cracker2 {
 			// Für jedes Bit eine 50% chance für 0 oder 1 sichern.
 			String binary = "";
 			for (int j = 0; j < varCount; j++) {
-				binary = Integer.toString(rand.nextInt(2)) + binary;
+				binary = rand.nextInt(2) + binary;
 			}
 
 			// Binary String zahl für zahl in int array übertragen
@@ -338,15 +338,13 @@ public class Cracker2 {
 	 */
 
 	public static byte[][] reducedRowEchelon(byte[][] matrix) {
+		
 		int piRow = 0; // Pivot-Reihe
 		int piCol = 0; // Pivot-Spalte
 		int M = getM(matrix); // Zeilenanzahl
 		int N = getN(matrix); // Spaltenanzahl
-		
-		int debugGes=0, debugSwap=0;
 
 		while (piRow < M && piCol < N) {
-			debugGes++;
 			int elementPos = -1;
 			for (int i = piRow; i < M; i++) {
 				// Pivot-Element gefunden
@@ -361,7 +359,6 @@ public class Cracker2 {
 			} else {
 				// Wenn Pivot-Element nicht in Reihe ist, für die ein Pivot-Element gesucht wird
 				if (elementPos != piRow) {
-					debugSwap++;
 					swapRow(matrix, piRow, elementPos);
 				}
 				// Alle Zeilen XOR die eine 1 in piRow haben und unter dem Pivot-Element sind
@@ -375,7 +372,8 @@ public class Cracker2 {
 				piCol++;
 			}
 		}
-		System.out.println("Ges.: "+debugGes+", swap: "+debugSwap);
+		System.out.println("Ges.: "+piCol);
+		
 		return matrix;
 	}
 
