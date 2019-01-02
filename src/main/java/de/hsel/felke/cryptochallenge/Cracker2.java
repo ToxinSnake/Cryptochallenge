@@ -266,22 +266,22 @@ public class Cracker2 {
 		byte fullMatrix[][] = new byte[2 * varCount * varCount][varCount * varCount];
 		System.out.println("Generating " + 2 * varCount * varCount + " cleartext-ciphertext pairs...");
 		
+		byte[] clearText = new byte[varCount];
+		byte[] cipherText = new byte[varCount];
+		HashMap<String, Double> values = new HashMap<>();
+		
 		// 2n^2 Klartexte erzeugen, einsetzen und resultierende Zeile erzeugen
-		for (int i = 0; i < (2 * varCount * varCount); i++) {
-			byte[] clearText = new byte[varCount];
-			byte[] cipherText = new byte[varCount];
-
-			// Für jedes Bit eine 50% chance für 0 oder 1 sichern.
-			String binary = "";
-			for (int j = 0; j < varCount; j++) {
-				binary = rand.nextInt(2) + binary;
+		for (int i = 0; i < (2 * varCount * varCount); i++) {			
+					
+			for (String iterator : allVars) {
+//				int varNum = iterator.charAt(2) - '0';
+				int varNum = Integer.parseInt(iterator.substring(2));
+				// Für jedes Bit eine 50% Chance für 0 oder 1 sichern.
+				byte varVal = (byte) rand.nextInt(2);
+				clearText[varNum - 1] = varVal;
+				values.put(iterator, (double) varVal);
 			}
-
-			// Binary String zahl für zahl in int array übertragen
-			for (int j = binary.length() - 1, n = 0; j >= 0; j--, n++) {
-				clearText[n] = (byte) (binary.charAt(j) - '0');
-			}
-
+			
 			// Debug Anfang
 			if (debug) {
 				System.out.print("Cleartext: ");
@@ -291,14 +291,6 @@ public class Cracker2 {
 				System.out.println();
 			}
 			// Debug Ende
-
-			HashMap<String, Double> values = new HashMap<String, Double>();
-			for (String iterator : allVars) {
-//				int varNum = iterator.charAt(2) - '0';
-				int varNum = Integer.parseInt(iterator.substring(2));
-				double varVal = clearText[varNum - 1];
-				values.put(iterator, varVal);
-			}
 
 			if (debug) System.out.print("Chitext: ");
 			int expressionCounter = 0;
