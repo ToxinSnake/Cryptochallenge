@@ -16,7 +16,7 @@
 					<archive>
 						<manifest>
 							<addClasspath>true</addClasspath>
-							<mainClass>de.hsel.felke.cryptochallenge.Cracker</mainClass>
+							<mainClass>de.hsel.felke.cryptochallenge.Cracker2</mainClass>
 						</manifest>
 					</archive>
 				</configuration>
@@ -36,7 +36,7 @@
               			</descriptorRefs>
               			<archive>
                 			<manifest>
-                  				<mainClass>de.hsel.felke.cryptochallenge.Cracker</mainClass>
+                  				<mainClass>de.hsel.felke.cryptochallenge.Cracker2</mainClass>
                				</manifest>
               			</archive>
             		</configuration>
@@ -52,6 +52,8 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
 	</properties>
 
 	<dependencies>
